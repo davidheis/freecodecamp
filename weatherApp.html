@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Local Weather</title>
+
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	
+</head>
+<body>
+  
+  <div id="description" class="jumbotron text-center">
+  </div>
+  <img id="image" alt="photo of the weather" class="col-xs-8 col-xs-offset-2">
+
+  <div id="location" class="jumbotron text-center col-xs-12" ></div>
+  
+  <button id="convertCel" class="btn btn-default col-xs-4 col-xs-offset-2">Display degrees in Fahrenheit</button>
+  
+  <button id="convertFar" class="btn btn-default text text-center col-xs-4">Display degrees in Celsius</button>
+  
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+			</script>
+
+<script type="text/javascript">
+
+
+	
+/*{"coord":{"lon":138.93,"lat":34.97},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"stations","main":{"temp":284.769,"pressure":1023.86,"humidity":100,"temp_min":284.769,"temp_max":284.769,"sea_level":1033.53,"grnd_level":1023.86},"wind":{"speed":9.41,"deg":265.51},"clouds":{"all":92},"dt":1484774120,"sys":{"message":0.0354,"country":"JP","sunrise":1484689836,"sunset":1484726371},"id":1851632,"name":"Shuzenji","cod":200}*/
+
+
+$(document).ready(function(){
+  
+	var lat;
+	var lon;
+   	if (navigator.geolocation) {
+    	navigator.geolocation.getCurrentPosition(function(position) {
+		lat = position.coords.latitude;
+		lon = position.coords.longitude;
+        $.getJSON('http://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lon+'&appid=8d455ee938e3f9e86e9eefd0c5fee518', function(json){
+			var html = "";
+			var minTempC = parseInt(json.main.temp_min - 273.15);
+			var maxTempC = parseInt(json.main.temp_max - 273.15);
+			var currentTempC = parseInt(json.main.temp - 273.15);
+			var minTempF = minTempC * 1.8 + 32;
+			var maxTempF = maxTempC * 1.8 + 32;
+			var currentTempF = currentTempC * 1.8 + 32;
+			var advice;
+			var convertCel = $('#convertCel');
+			var convertFar = $('#convertFar');
+			var scale = 'C';
+			document.getElementById("convertFar").disabled = true;
+			var location = $('#location');
+			var image = $('#image');
+			location.html(json.name);
+
+            if(maxTempC < 10){
+        		advice ='Wear a coat, it\'s cold.';
+                image.attr('src', 'https://greatexpectationspainting.com/wp-content/uploads/2016/11/cold-weather.jpg');
+        	}else if(maxTempC < 20){
+	        	advice ='Cool but good weather.';
+	            image.attr('src', 'https://icons.wxug.com/i/c/v4/partlycloudy.svg');
+			}else if(maxTempC > 34){
+	        	advice ='It\'ll be hot.';
+	            image.attr('src', 'http://4.bp.blogspot.com/-m_vJ3XFpaxw/VoCM1_Pm4nI/AAAAAAAAEO0/8dcjbC3_KsY/s320/HOT%2BDAY.png');
+			}else{
+				advice = 'You shouldn\'t need a coat.';
+				image.attr('src', 'http://kurir.mk/en/wp-content/uploads/sonchevo.jpg-500-480x360.jpg');
+          	}
+
+           $('#description').html('It\'s now ' + currentTempC.toFixed(1) + '°C with a minimum of ' + minTempC.toFixed(1) + '°C and a maxium of ' + maxTempC.toFixed(1) + '°C. ' + advice);
+              
+              convertCel.on('click', function(){
+                $('#description').html('It\'s now ' + currentTempF.toFixed(1) + '°F with a minimum of ' + minTempF.toFixed(1) + '°F and a maxium of ' + maxTempF.toFixed(1) + '°F. ' + advice);
+                document.getElementById("convertCel").disabled = true;
+                document.getElementById("convertFar").disabled = false;
+
+              })
+              
+              convertFar.on('click', function(){
+                $('#description').html('It\'s now ' + currentTempC.toFixed(1) + '°C with a minimum of ' + minTempC.toFixed(1) + '°C and a maxium of ' + maxTempC.toFixed(1) + '°C. ' + advice);
+                document.getElementById("convertFar").disabled = true;
+                document.getElementById("convertCel").disabled = false;
+
+                
+              })
+              
+              
+        // html += "<div class = 'cat'>";
+       
+        // html += "<strong>Temperature now : " + currentTemp + " Degrees Celcius<br>";
+        // html += "<strong>Humidty: " + json.main.humidity + "%<br>";
+        // html += "<strong>Low: " + minTemp + " Degree" + (minTemp != 1 ? 's' : '') + " Celcius<br>";
+        // html += "<strong>High: " + maxTemp + " Degree" + (maxTemp !== 1 ? 's' : '') + " Celcius<br>";
+        // html += "</div><br>";
+        
+      });  
+    });   
+  }
+});
+
+</script>
+</body>
+</html>

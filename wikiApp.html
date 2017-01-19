@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Local Weather</title>
+
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	
+  <style type="text/css">
+    #searchTerm{
+      width: 50%
+    }
+    #random{
+      margin-bottom: 50px;
+    }
+
+    #search{
+      margin-bottom: 50px;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Wiki Search</h1>
+
+    <a id="random" href="https://en.wikipedia.org/wiki/Special:Random" target="blank" class="col-xs-6 col-xs-offset-3 text-center btn btn-default">Click for random wiki</a>
+
+    <input id="searchTerm" class="form-control col-xs-6 col-xs-offset-3" type="" name="">
+    <button id="search" type="button" class="btn btn-primary col-xs-6 col-xs-offset-3">Submit</button>
+
+    <ul id="output" class="col-xs-12">
+    </ul>
+
+    <div id="message"></div>
+
+  </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+	</script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+  $('#search').click(function(){
+    var searchTerm = $('#searchTerm').val();
+    var url = 'https://en.wikipedia.org/w/api.php/w/api.php?action=opensearch&search=' + searchTerm + '&format=json&callback=?';
+    var ul = $('#output');
+
+    ul.html('');
+    $.ajax({
+      type:"GET",
+      url: url,
+      async: false,
+      dataType: 'json',
+      success: function(data){
+        for (var i = 0; i < data[1].length; i++) {
+          ul.prepend("<li><a href="+data[3][i]+">"+data[1][i]+"</a><p>"+data[2][i]+"</p></li>")
+        }
+        
+      },
+      error: function(errorMessage){
+        alert('error')
+      }
+    })
+
+   })
+
+ 
+})
+
+</script>
+</body>
+</html>
