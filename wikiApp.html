@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Local Weather</title>
+	<title>Wiki Search</title>
 
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	
@@ -49,7 +49,8 @@ $(document).ready(function(){
     var url = 'https://en.wikipedia.org/w/api.php/w/api.php?action=opensearch&search=' + searchTerm + '&format=json&callback=?';
     var ul = $('#output');
 
-    ul.html('');
+    ul.html(''); // clear previous html so each result doesnt add on the next
+    
     $.ajax({
       type:"GET",
       url: url,
@@ -57,7 +58,7 @@ $(document).ready(function(){
       dataType: 'json',
       success: function(data){
         for (var i = 0; i < data[1].length; i++) {
-          ul.prepend("<li><a href="+data[3][i]+">"+data[1][i]+"</a><p>"+data[2][i]+"</p></li>")
+          ul.prepend("<li><a href="+data[3][i]+" target=\"blank\">"+data[1][i]+"</a><p>"+data[2][i]+"</p></li>")
         }
         
       },
